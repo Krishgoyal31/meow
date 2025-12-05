@@ -79,8 +79,8 @@
         // ====================================================================
         // STEP 1: CONFIGURE RECEIVER DETAILS HERE
         // ====================================================================
-        const RECEIVER_VPA = "krishgoyal3101@okhdfcbank"; // <<< CHANGE THIS to your UPI ID
-        const RECEIVER_NAME = "Kindera"; // Optional but recommended
+        const RECEIVER_VPA = "9729504524@upi"; // <<< UPI ID to receive payment
+        const RECEIVER_NAME = "Kindera"; // Payee Name
         // ====================================================================
 
         document.getElementById('display-vpa').textContent = RECEIVER_VPA;
@@ -94,7 +94,8 @@
             const errorMessage = document.getElementById('error-message');
 
             const amount = parseFloat(amountInput.value);
-            const note = noteInput.value.trim().replace(/\s/g, '+'); // Replace spaces with '+' for UPI link format
+            // UPI convention often uses '+' instead of standard %20 for spaces in transaction notes (tn)
+            const note = noteInput.value.trim().replace(/\s/g, '+'); 
 
             // 1. Validation
             if (isNaN(amount) || amount <= 0) {
