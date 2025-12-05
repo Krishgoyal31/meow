@@ -3,158 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instant UPI Pay Link</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>UPI Payment App</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-        .pay-card {
-            max-width: 420px;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
         }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .amount-display {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            min-height: 50px;
+        }
+
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .quick-amount-btn {
+            padding: 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .quick-amount-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
         .pay-button {
-            background-color: #4CAF50; /* UPI Green */
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
+
         .pay-button:hover {
-            background-color: #43A047;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
+
         .pay-button:active {
-            transform: translateY(1px);
+            transform: translateY(0);
+        }
+
+        .pay-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .upi-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .upi-info p {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .upi-id {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .paying {
+            animation: pulse 1s infinite;
         }
     </style>
 </head>
-<body class="p-4 flex items-center justify-center min-h-screen">
+<body>
+    <div class="container">
+        <h1>💳 UPI Payment</h1>
+        <p class="subtitle">Quick & Secure Payment</p>
 
-    <div class="pay-card bg-white w-full rounded-2xl p-6 md:p-8 border border-gray-100">
-        
-        <div class="text-center mb-6">
-            <svg class="w-12 h-12 mx-auto text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2-3 .895-3 2 1.343 2 3 2m0-8V6m0 4v4m0 4v2m-6-6h2m4 0h2m-6 4h2m4 0h2"></path></svg>
-            <h1 class="text-2xl font-bold text-gray-800 mt-3">Send Payment via UPI</h1>
-            <p class="text-sm text-gray-500 mt-1">Paying to: <span id="display-vpa" class="font-medium text-gray-700"></span></p>
+        <div class="input-group">
+            <label for="amount">Enter Amount (₹)</label>
+            <input type="number" id="amount" placeholder="Enter amount" min="1" step="0.01">
+            <span class="error" id="amountError">Please enter a valid amount</span>
         </div>
 
-        <!-- Input Section -->
-        <div class="mb-6">
-            <label for="amount" class="block text-sm font-semibold text-gray-700 mb-2">Enter Amount to Pay (INR)</label>
-            <div class="relative rounded-xl shadow-md">
-                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                    <span class="text-gray-500 font-extrabold text-xl">₹</span>
-                </div>
-                <input type="number" id="amount" value="" min="1" step="0.01"
-                       class="block w-full rounded-xl border-gray-300 pl-12 pr-4 py-4 text-2xl font-bold focus:ring-green-500 focus:border-green-500 transition duration-150 border-2"
-                       placeholder="e.g., 500.00">
-            </div>
-            <p id="error-message" class="text-sm text-red-500 mt-2 hidden">Please enter a valid amount greater than zero.</p>
+        <div class="amount-display" id="displayAmount">₹ 0</div>
+
+        <div class="quick-amounts">
+            <button class="quick-amount-btn" onclick="setAmount(100)">₹ 100</button>
+            <button class="quick-amount-btn" onclick="setAmount(500)">₹ 500</button>
+            <button class="quick-amount-btn" onclick="setAmount(1000)">₹ 1000</button>
+            <button class="quick-amount-btn" onclick="setAmount(2000)">₹ 2000</button>
+            <button class="quick-amount-btn" onclick="setAmount(5000)">₹ 5000</button>
+            <button class="quick-amount-btn" onclick="setAmount(10000)">₹ 10000</button>
         </div>
 
-        <div class="mb-4">
-            <label for="note" class="block text-sm font-medium text-gray-700 mb-1">Payment Note (Optional)</label>
-            <input type="text" id="note" 
-                   class="block w-full rounded-lg border-gray-300 px-4 py-3 focus:ring-green-500 focus:border-green-500 transition duration-150 border"
-                   placeholder="e.g., Service fee, Invoice 101">
+        <div class="input-group">
+            <label for="note">Payment Note (Optional)</label>
+            <input type="text" id="note" placeholder="e.g., Payment for services">
         </div>
 
-        <!-- Action Button -->
-        <button onclick="initiateUpiPayment()" class="pay-button text-white w-full py-4 rounded-xl font-extrabold text-lg shadow-xl shadow-green-200 hover:shadow-green-300 mt-4">
-            Pay Now
+        <button class="pay-button" id="payButton" onclick="initiatePayment()">
+            Pay Now with UPI
         </button>
 
-        <p class="text-center text-xs text-gray-400 mt-6">
-            Clicking 'Pay Now' will launch your installed UPI application (GPay, PhonePe, Paytm, etc.)
-        </p>
+        <div class="success-message" id="successMessage">
+            Payment link generated! Opening UPI app...
+        </div>
 
+        <div class="upi-info">
+            <p>Payment will be sent to:</p>
+            <p class="upi-id" id="upiDisplay">your-upi@okaxis</p>
+        </div>
     </div>
 
-    <!-- Custom Message Box Container -->
-    <div id="message-box-container"></div>
-
     <script>
-        // ====================================================================
-        // STEP 1: CONFIGURE RECEIVER DETAILS HERE
-        // ====================================================================
-        const RECEIVER_VPA = "9729504524@okhdfcbank"; // <<< UPI ID to receive payment
-        const RECEIVER_NAME = "Krish Goyal"; // Payee Name
-        // ====================================================================
+        // ⚠️ IMPORTANT: Replace this with your actual UPI ID
+        const MERCHANT_UPI_ID = '9729504524@upi';
+        const MERCHANT_NAME = 'Krish Goyal';
 
-        document.getElementById('display-vpa').textContent = RECEIVER_VPA;
+        // Update display
+        document.getElementById('upiDisplay').textContent = MERCHANT_UPI_ID;
 
-        /**
-         * Initiates the UPI payment by redirecting to the deep link.
-         */
-        function initiateUpiPayment() {
-            const amountInput = document.getElementById('amount');
-            const noteInput = document.getElementById('note');
-            const errorMessage = document.getElementById('error-message');
+        // Amount input handler
+        document.getElementById('amount').addEventListener('input', function(e) {
+            let value = parseFloat(e.target.value) || 0;
+            document.getElementById('displayAmount').textContent = '₹ ' + value.toFixed(2);
+            document.getElementById('amountError').style.display = 'none';
+        });
 
-            const amount = parseFloat(amountInput.value);
-            // UPI convention often uses '+' instead of standard %20 for spaces in transaction notes (tn)
-            const note = noteInput.value.trim().replace(/\s/g, '+'); 
+        // Set quick amount
+        function setAmount(amount) {
+            document.getElementById('amount').value = amount;
+            document.getElementById('displayAmount').textContent = '₹ ' + amount.toFixed(2);
+            document.getElementById('amountError').style.display = 'none';
+        }
 
-            // 1. Validation
-            if (isNaN(amount) || amount <= 0) {
-                errorMessage.classList.remove('hidden');
-                amountInput.focus();
+        // Initiate UPI payment
+        function initiatePayment() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const note = document.getElementById('note').value || 'Payment';
+            const payButton = document.getElementById('payButton');
+            const successMessage = document.getElementById('successMessage');
+            const amountError = document.getElementById('amountError');
+
+            // Validate amount
+            if (!amount || amount <= 0) {
+                amountError.style.display = 'block';
                 return;
             }
-            errorMessage.classList.add('hidden');
 
-            // Ensure amount is formatted correctly
-            const formattedAmount = amount.toFixed(2);
+            // Generate UPI payment URL
+            const upiUrl = `upi://pay?pa=${encodeURIComponent(MERCHANT_UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
 
-            // 2. Construct the UPI Deep Link
-            // upi://pay?pa={VPA}&pn={PayeeName}&am={Amount}&cu={Currency}&tn={TransactionNote}
-            const upiLink = `upi://pay?pa=${RECEIVER_VPA}&pn=${encodeURIComponent(RECEIVER_NAME)}&am=${formattedAmount}&cu=INR&tn=${note}`;
-            
-            // 3. Redirect (This triggers the UPI app chooser on mobile devices)
-            window.location.href = upiLink;
+            // Show success message
+            successMessage.style.display = 'block';
+            payButton.classList.add('paying');
+            payButton.disabled = true;
+            payButton.textContent = 'Opening UPI App...';
 
-            // 4. Fallback (Since redirection is immediate, this helps desktop users)
-            // For desktop users, the redirection will often fail, so we give them a clear message.
-            if (!/Mobi|Android/i.test(navigator.userAgent)) {
-                 // Delay the message slightly so the redirection has time to fail/happen first
-                 setTimeout(() => {
-                    showMessageBox(
-                        "Action Required (Desktop)",
-                        "The UPI transaction should have opened your mobile app. If you are on a desktop, please use your phone camera to scan the QR code (which is not displayed here) or manually send funds to " + RECEIVER_VPA + " for ₹" + formattedAmount + ".",
-                        "info"
-                    );
-                 }, 500);
+            // Open UPI app
+            setTimeout(() => {
+                window.location.href = upiUrl;
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    payButton.classList.remove('paying');
+                    payButton.disabled = false;
+                    payButton.textContent = 'Pay Now with UPI';
+                    successMessage.style.display = 'none';
+                }, 3000);
+            }, 500);
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('amount').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                initiatePayment();
             }
-        }
-
-        /**
-         * Custom message box utility (since alert() is forbidden).
-         */
-        function showMessageBox(title, message, type) {
-            const container = document.getElementById('message-box-container');
-            container.innerHTML = ''; 
-
-            const box = document.createElement('div');
-            box.id = 'custom-message-box';
-            box.className = 'fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300';
-            
-            const titleColor = type === 'error' ? 'text-red-700' : 'text-blue-700';
-            const buttonColor = type === 'error' ? 'bg-red-500 hover:bg-red-600' : 'bg-indigo-500 hover:bg-indigo-600';
-
-            box.innerHTML = `
-                <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-sm transform scale-100">
-                    <h3 id="msg-title" class="${titleColor} text-xl font-bold mb-3">${title}</h3>
-                    <p id="msg-content" class="text-gray-700 mb-4 text-sm">${message}</p>
-                    <button onclick="document.getElementById('message-box-container').innerHTML = ''" 
-                            class="w-full ${buttonColor} text-white font-semibold py-2 rounded-lg transition duration-150">
-                        Close
-                    </button>
-                </div>
-            `;
-            container.appendChild(box);
-        }
+        });
     </script>
 </body>
 </html>
